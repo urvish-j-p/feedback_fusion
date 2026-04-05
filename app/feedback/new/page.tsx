@@ -14,72 +14,55 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { toast } from "sonner";
-
-// Server action function
-async function submitFeedback(
-  prevState: { success: boolean; error: string },
-  formData: FormData,
-) {
-  // Show loading toast
-  const loadingToast = toast.loading("Submitting your feedback...");
-
-  try {
-    const response = await fetch("/api/feedback", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: formData.get("title"),
-        description: formData.get("description"),
-        category: formData.get("category"),
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to create post");
-    }
-
-    // Dismiss loading toast and show success
-    toast.dismiss(loadingToast);
-    toast.success("Your feedback has been submitted successfully");
-
-    return {
-      success: true,
-      error: "",
-    };
-  } catch (error) {
-    console.error("Something went wrong. Please try again.", error);
-    // Dismiss loading toast and show success
-    toast.dismiss(loadingToast);
-    toast.error("Something went wrong.");
-    return {
-      success: false,
-      error: "Failed to submit feedback",
-    };
-  }
-}
 
 export default function NewFeedbackPage() {
   const router = useRouter();
-  const [state, action, isPending] = useActionState(submitFeedback, {
-    success: false,
-    error: "",
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect on success
-  useEffect(() => {
-    if (state.success) {
-      const timer = setTimeout(() => {
-        router.push("/feedback");
-        router.refresh();
-      }, 100); // Wait for toast to be visible
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (isSubmitting) return;
 
-      return () => clearTimeout(timer);
+    const formData = new FormData(e.currentTarget);
+    setIsSubmitting(true);
+    const loadingToast = toast.loading("Submitting your feedback...");
+
+    try {
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: formData.get("title"),
+          description: formData.get("description"),
+          category: formData.get("category"),
+        }),
+      });
+
+      toast.dismiss(loadingToast);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          toast.error("Please sign in to submit feedback.");
+        } else {
+          toast.error("Something went wrong. Please try again.");
+        }
+        return;
+      }
+
+      toast.success("Your feedback has been submitted successfully");
+      router.push("/feedback");
+    } catch (error) {
+      console.error("Something went wrong. Please try again.", error);
+      toast.dismiss(loadingToast);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-  }, [state.success, router]);
+  }
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-2">
@@ -99,7 +82,7 @@ export default function NewFeedbackPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={action} className="space-y-6">
+          <form onSubmit={onSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input
@@ -135,8 +118,8 @@ export default function NewFeedbackPage() {
               />
             </div>
             <div className="flex gap-4">
-              <Button type="submit" disabled={isPending}>
-                {isPending ? "Submitting..." : "Submit Feedback"}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit Feedback"}
               </Button>
               <Button type="button" variant="outline" asChild>
                 <Link href="/feedback">Cancel</Link>
