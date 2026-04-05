@@ -16,8 +16,8 @@ export default function HomePage() {
     <div className="space-y-12">
       {/* Hero Section */}
       <GradientHeader
-        title="Shape the future of our product"
-        subtitle="Feedback Fusion is where your ideas come to life. Suggest features, vote on what matters most, and follow our public roadmap."
+        title="From Feedback to Features — Faster"
+        subtitle="Let users suggest ideas, vote on priorities, and track what's coming next."
       >
         <div className="flex gap-4 justify-center pt-4">
           <Button
@@ -47,11 +47,11 @@ export default function HomePage() {
           <Card>
             <CardHeader>
               <MessageSquare className=" h-8 w-8 text-primary mb-2" />
-              <CardTitle>Submit Ideas</CardTitle>
+              <CardTitle>Gather Ideas</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                Share your suggestion and feature requesrs with the community
+                Capture user feedback and feature suggestions effortlessly.
               </p>
             </CardContent>
           </Card>
@@ -62,7 +62,7 @@ export default function HomePage() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                Upvote ideas you love to help us understand what matters most.
+                Turn user votes into clear product priorities.
               </p>
             </CardContent>
           </Card>
@@ -73,19 +73,18 @@ export default function HomePage() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                Follow our public roadmap to see what we&#39;re working on next.
+                Let users stay updated on what's being built.
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
               <Zap className=" h-8 w-8 text-primary mb-2" />
-              <CardTitle>See Results</CardTitle>
+              <CardTitle>Ship with Confidence</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                Watch as your feedback transforms into real features and
-                improvements.
+                Build and release features backed by real user demand.
               </p>
             </CardContent>
           </Card>
