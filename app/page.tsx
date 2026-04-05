@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-export default function HomePage() {
+export default async function HomePage() {
+
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -88,23 +89,6 @@ export default function HomePage() {
               </p>
             </CardContent>
           </Card>
-        </div>
-      </section>
-      {/* Stats Section */}
-      <section className="text-center">
-        <div className="inline-grid grid-cols-3 gap-8">
-          <div>
-            <div className="text-3xl font-bold">1,234+</div>
-            <div className="text-muted-foreground">Suggestions</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold">8,901+</div>
-            <div className="text-muted-foreground">Votes Cast</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold">254+</div>
-            <div className="text-muted-foreground">Features Shipped</div>
-          </div>
         </div>
       </section>
     </div>
