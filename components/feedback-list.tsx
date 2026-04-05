@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import {
   Card,
@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { MessageSquare, ThumbsUp, User } from "lucide-react";
+import { ThumbsUp, User } from "lucide-react";
 import { STATUS_GROUPS } from "@/app/data/status-data";
 import { Badge } from "./ui/badge";
 import { getCategoryDesign } from "@/app/data/category-data";
@@ -24,6 +24,10 @@ export default function FeedbackList({
   userId: string | null;
 }) {
   const [posts, setPosts] = useState(initialPosts);
+
+  useEffect(() => {
+    setPosts(initialPosts);
+  }, [initialPosts]);
 
   const handleVote = async (postId: number) => {
     if (!userId) {
@@ -143,7 +147,7 @@ export default function FeedbackList({
                 variant="outline"
                 size="sm"
                 onClick={() => handleVote(post.id)}
-                className="gap-2"
+                className="gap-2 cursor-pointer"
               >
                 <ThumbsUp
                   className={`h-4 w-4 ${
@@ -154,10 +158,6 @@ export default function FeedbackList({
                 />
                 {post.votes.length} Votes
               </Button>
-              <div className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-                <MessageSquare className="h-4 w-4" />
-                Comment
-              </div>
             </div>
           </CardContent>
         </Card>

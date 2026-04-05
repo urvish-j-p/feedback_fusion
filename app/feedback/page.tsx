@@ -15,11 +15,17 @@ import { getCategoryDesign } from "../data/category-data";
 import { Badge } from "@/components/ui/badge";
 import FeedbackList from "@/components/feedback-list";
 
-export default async function FeedbackPage() {
+export default async function FeedbackPage(props: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const searchParams = props.searchParams ? await props.searchParams : undefined;
+  const categoryFilter = searchParams?.category as string | undefined;
+
   // Get the useId from clerk auth
   const { userId } = await auth();
 
   const posts = await prisma.post.findMany({
+    where: categoryFilter ? { category: categoryFilter } : undefined,
     include: {
       author: true,
       votes: true,
@@ -75,14 +81,31 @@ export default async function FeedbackPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
+                  <Link
+                    href="/feedback"
+                    className={`group flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer ${
+                      !categoryFilter ? "bg-muted" : "hover:bg-muted/50"
+                    }`}
+                  >
+                    <span className="font-medium text-sm">All Categories</span>
+                  </Link>
                   {categories.map((cat) => {
                     const design = getCategoryDesign(cat.category);
                     const Icon = design.icon;
 
                     return (
-                      <div
+                      <Link
+                        href={`/feedback${
+                          categoryFilter === cat.category
+                            ? ""
+                            : `?category=${encodeURIComponent(cat.category)}`
+                        }`}
                         key={cat.category}
-                        className="group flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                        className={`group flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer ${
+                          categoryFilter === cat.category
+                            ? "bg-muted"
+                            : "hover:bg-muted/50"
+                        }`}
                       >
                         <div className="flex items-center gap-3">
                           <div
@@ -100,7 +123,7 @@ export default async function FeedbackPage() {
                         >
                           {cat._count}
                         </Badge>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>

@@ -137,7 +137,7 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
                   <TableCell className="align-middle">
                     <div className="flex items-center gap-2">
                       <User className="h-3 w-3" />
-                      <span className="truncate max-w-[100px]">
+                      <span className="truncate max-w-[200px]">
                         {post.author.name}
                       </span>
                     </div>
@@ -151,7 +151,7 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
                             handleStatusChange(post.id, value)
                           }
                         >
-                          <SelectTrigger className="w-[140px]">
+                          <SelectTrigger className="w-[160px] cursor-pointer">
                             <SelectValue>
                               <div className="flex items-center">
                                 {getStatusIcon(currentStatus)}
@@ -171,7 +171,7 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
                                 ];
                               const Icon = statusGroup.icon;
                               return (
-                                <SelectItem key={status} value={status}>
+                                <SelectItem key={status} value={status} className="cursor-pointer">
                                   <div className="flex items-center gap-2">
                                     <Icon className="h-4 w-4" />
                                     {statusGroup.title}
@@ -206,7 +206,7 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
                         <Button
                           size="sm"
                           onClick={() => saveStatus(post.id)}
-                          className="gap-1 h-8"
+                          className="gap-1 h-8 cursor-pointer"
                         >
                           <Save className="h-3 w-3" />
                           Save
@@ -215,18 +215,18 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
                           variant="ghost"
                           size="sm"
                           onClick={() => cancelEditing(post.id)}
-                          className="gap-1 h-8"
+                          className="gap-1 h-8 cursor-pointer"
                         >
                           <X className="h-3 w-3" />
                         </Button>
                       </>
                     ) : (
-                      <>
+                       <>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => startEditing(post.id)}
-                          className="gap-1 h-8"
+                          className="gap-1 h-8 cursor-pointer"
                         >
                           <Edit className="h-3 w-3" />
                           Edit

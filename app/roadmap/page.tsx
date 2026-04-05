@@ -12,7 +12,6 @@ import prisma from "@/lib/prisma";
 import { BarChart3, CheckCheck, Clock, Target } from "lucide-react";
 import { STATUS_GROUPS, STATUS_ORDER } from "../data/status-data";
 import { Badge } from "@/components/ui/badge";
-import { stat } from "fs";
 
 function getStatusPercentage(posts: any, status: string) {
   const total = posts.length;
@@ -57,8 +56,7 @@ export default async function RoadmapPage() {
     <div className="space-y-8">
       <GradientHeader
         title="Product Roadmap"
-        subtitle="See what we're working on, what's coming next, and track our
-            progress"
+        subtitle="See what we're working on and what's coming next."
       />
 
       {/* Stats Overview */}
