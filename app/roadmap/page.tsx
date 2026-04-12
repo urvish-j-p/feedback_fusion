@@ -156,7 +156,7 @@ export default async function RoadmapPage() {
 
           return (
             <div key={status} className="space-y-4">
-              <div className="sticky top-0 z-20 pt-6 pb-4 bg-background -mx-2 px-2">
+              <div className="sticky top-16 z-20 pt-6 pb-4 bg-background -mx-2 px-2">
                 <div
                   className={`rounded-lg p-4 ${group.bgColor} border ${group.color}`}
                 >

@@ -80,7 +80,7 @@ export default async function FeedbackPage(props: {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-6 lg:h-fit">
+          <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-22 lg:h-fit">
             <Card>
               <CardHeader>
                 <CardTitle>Categories</CardTitle>
@@ -142,7 +142,7 @@ export default async function FeedbackPage(props: {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <div 
-              className="hidden lg:block sticky top-0 h-6 bg-background z-20 -mx-4 -mt-6" 
+              className="hidden lg:block sticky top-16 h-6 bg-background z-20 -mx-4 -mt-6" 
               aria-hidden="true" 
             />
             <FeedbackList initialPosts={posts} clerkUserId={userId} dbUserId={dbUserId} />
