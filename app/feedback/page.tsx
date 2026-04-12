@@ -24,6 +24,15 @@ export default async function FeedbackPage(props: {
   // Get the useId from clerk auth
   const { userId } = await auth();
 
+  let dbUserId = null;
+  if (userId) {
+    const dbUser = await prisma.user.findUnique({
+      where: { clerkUserId: userId },
+      select: { id: true },
+    });
+    dbUserId = dbUser?.id || null;
+  }
+
   const posts = await prisma.post.findMany({
     where: categoryFilter ? { category: categoryFilter } : undefined,
     include: {
@@ -73,7 +82,7 @@ export default async function FeedbackPage(props: {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-6 lg:h-fit">
             <Card>
               <CardHeader>
                 <CardTitle>Categories</CardTitle>
@@ -83,6 +92,7 @@ export default async function FeedbackPage(props: {
                 <div className="space-y-3">
                   <Link
                     href="/feedback"
+                    scroll={false}
                     className={`group flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer ${
                       !categoryFilter ? "bg-muted" : "hover:bg-muted/50"
                     }`}
@@ -100,6 +110,7 @@ export default async function FeedbackPage(props: {
                             ? ""
                             : `?category=${encodeURIComponent(cat.category)}`
                         }`}
+                        scroll={false}
                         key={cat.category}
                         className={`group flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer ${
                           categoryFilter === cat.category
@@ -132,7 +143,7 @@ export default async function FeedbackPage(props: {
           </div>
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <FeedbackList initialPosts={posts} userId={userId} />
+            <FeedbackList initialPosts={posts} clerkUserId={userId} dbUserId={dbUserId} />
           </div>
         </div>
       </div>

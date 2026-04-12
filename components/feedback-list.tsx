@@ -18,22 +18,29 @@ import { toast } from "sonner";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default function FeedbackList({
   initialPosts,
-  userId,
+  clerkUserId,
+  dbUserId,
 }: {
   initialPosts: any[];
-  userId: string | null;
+  clerkUserId: string | null;
+  dbUserId: number | null;
 }) {
   const [posts, setPosts] = useState(initialPosts);
+  const [votingPosts, setVotingPosts] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     setPosts(initialPosts);
   }, [initialPosts]);
 
   const handleVote = async (postId: number) => {
-    if (!userId) {
+    if (!clerkUserId) {
       toast.error("Please sign in to vote on feedback");
       return;
     }
+
+    if (votingPosts.has(postId)) return;
+
+    setVotingPosts((prev) => new Set(prev).add(postId));
 
     // Show loading toast
     const loadingToast = toast.loading("Submitting vote...");
@@ -59,15 +66,15 @@ export default function FeedbackList({
       toast.success(data.voted ? "Vote added!" : "Vote removed");
 
       // Update local state
-      setPosts(
-        posts.map((post) => {
+      setPosts((currentPosts) =>
+        currentPosts.map((post) => {
           if (post.id === postId) {
             const voteCount = post.votes.length;
             return {
               ...post,
               votes: data.voted
-                ? [...post.votes, { userId }]
-                : post.votes.filter((v: any) => v.userId !== userId),
+                ? [...post.votes, { userId: dbUserId }]
+                : post.votes.filter((v: any) => v.userId !== dbUserId),
               _count: {
                 votes: data.voted ? voteCount + 1 : voteCount - 1,
               },
@@ -81,6 +88,12 @@ export default function FeedbackList({
       // Dismiss loading toast and show success
       toast.dismiss(loadingToast);
       toast.error("Failed to submit vote. Please try again");
+    } finally {
+      setVotingPosts((prev) => {
+        const next = new Set(prev);
+        next.delete(postId);
+        return next;
+      });
     }
   };
   return (
@@ -146,12 +159,13 @@ export default function FeedbackList({
               <Button
                 variant="outline"
                 size="sm"
+                disabled={votingPosts.has(post.id)}
                 onClick={() => handleVote(post.id)}
                 className="gap-2 cursor-pointer"
               >
                 <ThumbsUp
                   className={`h-4 w-4 ${
-                    post.votes.some((v: any) => v.userId === userId)
+                    post.votes.some((v: any) => v.userId === dbUserId)
                       ? "fill-current"
                       : ""
                   }`}
