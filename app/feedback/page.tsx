@@ -14,6 +14,7 @@ import Link from "next/link";
 import { getCategoryDesign } from "../data/category-data";
 import { Badge } from "@/components/ui/badge";
 import FeedbackList from "@/components/feedback-list";
+import { SubmitFeedbackButton } from "@/components/submit-feedback-button";
 
 export default async function FeedbackPage(props: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -57,16 +58,12 @@ export default async function FeedbackPage(props: {
           subtitle="Explore, vote, and contribute to the features that matter most. Your voice shapes our product's future."
         >
           <div className="flex gap-4 justify-center pt-4">
-            <Button
-              asChild
-              size="lg"
-              className="bg-white text-blue-600 hover:bg-gray-100"
+            <SubmitFeedbackButton
+              className="bg-white text-blue-600 hover:bg-gray-100 cursor-pointer"
             >
-              <Link href="/feedback/new">
-                <PlusIcon className="ml-2 h-4 w-4" />
-                New Feedback
-              </Link>
-            </Button>
+              <PlusIcon className="ml-2 h-4 w-4" />
+              New Feedback
+            </SubmitFeedbackButton>
             <Button
               asChild
               size="lg"

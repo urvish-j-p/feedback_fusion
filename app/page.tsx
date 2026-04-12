@@ -10,6 +10,7 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
+import { SubmitFeedbackButton } from "@/components/submit-feedback-button";
 
 export default async function HomePage() {
 
@@ -21,15 +22,11 @@ export default async function HomePage() {
         subtitle="Let users suggest ideas, vote on priorities, and track what's coming next."
       >
         <div className="flex gap-4 justify-center pt-4">
-          <Button
-            asChild
-            size="lg"
-            className="bg-white text-blue-600 hover:bg-gray-100"
+          <SubmitFeedbackButton
+            className="bg-white text-blue-600 hover:bg-gray-100 cursor-pointer"
           >
-            <Link href="/feedback/new">
-              Submit Feedback <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+            Submit Feedback <ArrowRight className="ml-2 h-4 w-4" />
+          </SubmitFeedbackButton>
           <Button
             asChild
             size="lg"
