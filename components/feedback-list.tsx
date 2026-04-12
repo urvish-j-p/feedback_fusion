@@ -104,12 +104,12 @@ export default function FeedbackList({
           className="hover:shadow-md transition-shadow border"
         >
           <CardHeader>
-            <div className="flex items-start justify-between gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <CardTitle className="text-lg">{post.title}</CardTitle>
+                <CardTitle className="text-lg leading-tight">{post.title}</CardTitle>
                 <CardDescription className="flex items-center gap-1.5 mt-1">
                   <User className="h-3 w-3" />
-                  {post.author.name}
+                  <span className="truncate">{post.author.name}</span>
                   <span>|</span>
                   <span className="whitespace-nowrap">
                     {formatDistanceToNow(new Date(post.createdAt), {
@@ -118,7 +118,7 @@ export default function FeedbackList({
                   </span>
                 </CardDescription>
               </div>
-              <div className="flex gap-1.5">
+              <div className="flex flex-wrap gap-1.5 shrink-0">
                 {/* Status Badge */}
                 {(() => {
                   const statusGroup =

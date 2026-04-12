@@ -57,17 +57,18 @@ export default async function FeedbackPage(props: {
           title="Community Feedback"
           subtitle="Explore, vote, and contribute to the features that matter most. Your voice shapes our product's future."
         >
-          <div className="flex gap-4 justify-center pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-6">
             <SubmitFeedbackButton
-              className="bg-white text-blue-600 hover:bg-gray-100 cursor-pointer"
+              size="default"
+              className="bg-white text-blue-600 hover:bg-gray-100 cursor-pointer w-full sm:w-auto text-sm sm:text-base h-11 sm:h-12 px-6 sm:px-8"
             >
               <PlusIcon className="ml-2 h-4 w-4" />
               New Feedback
             </SubmitFeedbackButton>
             <Button
               asChild
-              size="lg"
-              className="bg-white text-black hover:bg-gray-100"
+              size="default"
+              className="bg-white text-black hover:bg-gray-100 w-full sm:w-auto text-sm sm:text-base h-11 sm:h-12 px-6 sm:px-8"
             >
               <Link href="/roadmap">
                 <Map className="ml-2 h-4 w-4" />

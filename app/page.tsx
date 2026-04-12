@@ -21,16 +21,17 @@ export default async function HomePage() {
         title="From Feedback to Features — Faster"
         subtitle="Let users suggest ideas, vote on priorities, and track what's coming next."
       >
-        <div className="flex gap-4 justify-center pt-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-6">
           <SubmitFeedbackButton
-            className="bg-white text-blue-600 hover:bg-gray-100 cursor-pointer"
+            size="default"
+            className="bg-white text-blue-600 hover:bg-gray-100 cursor-pointer w-full sm:w-auto text-sm sm:text-base h-11 sm:h-12 px-6 sm:px-8"
           >
             Submit Feedback <ArrowRight className="ml-2 h-4 w-4" />
           </SubmitFeedbackButton>
           <Button
             asChild
-            size="lg"
-            className="bg-white text-black hover:bg-gray-100"
+            size="default"
+            className="bg-white text-black hover:bg-gray-100 w-full sm:w-auto text-sm sm:text-base h-11 sm:h-12 px-6 sm:px-8"
           >
             <Link href="/roadmap">
               View Roadmap <Map className="ml-2 h-4 w-4" />
