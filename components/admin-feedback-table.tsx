@@ -11,7 +11,8 @@ import {
 } from "./ui/table";
 import { getCategoryDesign } from "@/app/data/category-data";
 import { Badge } from "./ui/badge";
-import { Edit, Save, ThumbsUp, User, X } from "lucide-react";
+import { Edit, Save, ThumbsUp, User, X, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { STATUS_GROUPS, STATUS_ORDER } from "@/app/data/status-data";
 import { Button } from "./ui/button";
 import {
@@ -22,11 +23,24 @@ import {
   SelectValue,
 } from "./ui/select";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
+  const router = useRouter();
   const [editingPostId, setEditingPostId] = useState<number | null>(null);
   const [savingPostId, setSavingPostId] = useState<number | null>(null);
+  const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
   const [postStatus, setPostStatus] = useState<Record<number, string>>(
     Object.fromEntries(posts.map((post) => [post.id, post.status])),
   );
@@ -85,6 +99,30 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
       toast.error("failed to update feedback status, Please try again.");
     } finally {
       setSavingPostId(null);
+    }
+  };
+
+  const deletePost = async (postId: number) => {
+    setDeletingPostId(postId);
+    const loadingToast = toast.loading("Deleting feedback...");
+    try {
+      const response = await fetch(`/api/feedback/${postId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete feedback");
+      }
+
+      toast.dismiss(loadingToast);
+      toast.success("Feedback deleted successfully!");
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to delete feedback: ", error);
+      toast.dismiss(loadingToast);
+      toast.error("Failed to delete feedback. Please try again.");
+    } finally {
+      setDeletingPostId(null);
     }
   };
 
@@ -226,15 +264,47 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
                       </>
                     ) : (
                       <>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => startEditing(post.id)}
-                          className="gap-1 h-8 cursor-pointer"
-                        >
-                          <Edit className="h-3 w-3" />
-                          Edit
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => startEditing(post.id)}
+                            className="gap-1 h-8 cursor-pointer"
+                          >
+                            <Edit className="h-3 w-3" />
+                            Edit
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                disabled={deletingPostId === post.id}
+                                className="gap-1 h-8 cursor-pointer"
+                              >
+                                <Trash className="h-3 w-3" />
+                                {deletingPostId === post.id ? "Deleting..." : "Delete"}
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will permanently delete the feedback.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => deletePost(post.id)}
+                                  className="bg-destructive text-white hover:bg-destructive/90 cursor-pointer"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </>
                     )}
                   </TableCell>
