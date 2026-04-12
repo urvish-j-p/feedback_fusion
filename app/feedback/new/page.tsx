@@ -132,12 +132,12 @@ export default function NewFeedbackPage() {
                 required
               />
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-4 justify-end">
+              <Button type="button" variant="outline" asChild className="cursor-pointer">
+                <Link href="/feedback">Cancel</Link>
+              </Button>
               <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
                 {isSubmitting ? "Submitting..." : "Submit Feedback"}
-              </Button>
-              <Button type="button" variant="outline" asChild>
-                <Link href="/feedback">Cancel</Link>
               </Button>
             </div>
           </form>
