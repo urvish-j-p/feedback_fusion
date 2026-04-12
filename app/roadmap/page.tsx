@@ -156,23 +156,25 @@ export default async function RoadmapPage() {
 
           return (
             <div key={status} className="space-y-4">
-              <div
-                className={`rounded-lg p-4 ${group.bgColor} border ${group.color}`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <Icon className={`h-5 w-5 ${group.textColor}`} />
-                    <h2 className={`text-lg font-semibold ${group.textColor}`}>
-                      {group.title}
-                    </h2>
+              <div className="sticky top-0 z-20 pt-6 pb-4 bg-background -mx-2 px-2">
+                <div
+                  className={`rounded-lg p-4 ${group.bgColor} border ${group.color}`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Icon className={`h-5 w-5 ${group.textColor}`} />
+                      <h2 className={`text-lg font-semibold ${group.textColor}`}>
+                        {group.title}
+                      </h2>
+                    </div>
+                    <Badge variant="secondary" className={group.countColor}>
+                      {postsInGroup.length}
+                    </Badge>
                   </div>
-                  <Badge variant="secondary" className={group.countColor}>
-                    {postsInGroup.length}
-                  </Badge>
+                  <p className="text-sm text-muted-foreground">
+                    {group.description}
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  {group.description}
-                </p>
               </div>
               <div className="space-y-3">
                 {postsInGroup.map((post) => (

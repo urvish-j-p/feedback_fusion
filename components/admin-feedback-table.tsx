@@ -26,6 +26,7 @@ import { toast } from "sonner";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
   const [editingPostId, setEditingPostId] = useState<number | null>(null);
+  const [savingPostId, setSavingPostId] = useState<number | null>(null);
   const [postStatus, setPostStatus] = useState<Record<number, string>>(
     Object.fromEntries(posts.map((post) => [post.id, post.status])),
   );
@@ -58,6 +59,7 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
   };
 
   const saveStatus = async (postId: number) => {
+    setSavingPostId(postId);
     // Show loading toast
     const loadingToast = toast.loading("Saving status...");
     try {
@@ -81,6 +83,8 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
       console.error("Failed to update status: ", error);
       toast.dismiss(loadingToast);
       toast.error("failed to update feedback status, Please try again.");
+    } finally {
+      setSavingPostId(null);
     }
   };
 
@@ -167,7 +171,7 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
                             {STATUS_ORDER.map((status) => {
                               const statusGroup =
                                 STATUS_GROUPS[
-                                  status as keyof typeof STATUS_GROUPS
+                                status as keyof typeof STATUS_GROUPS
                                 ];
                               const Icon = statusGroup.icon;
                               return (
@@ -185,11 +189,10 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
                     ) : (
                       <Badge
                         variant="outline"
-                        className={`flex items-center gap-2 ${
-                          STATUS_GROUPS[
-                            currentStatus as keyof typeof STATUS_GROUPS
-                          ]?.countColor
-                        }`}
+                        className={`flex items-center gap-2 ${STATUS_GROUPS[
+                          currentStatus as keyof typeof STATUS_GROUPS
+                        ]?.countColor
+                          }`}
                       >
                         {getStatusIcon(currentStatus)}
                         {
@@ -205,11 +208,12 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
                       <>
                         <Button
                           size="sm"
+                          disabled={savingPostId === post.id}
                           onClick={() => saveStatus(post.id)}
                           className="gap-1 h-8 cursor-pointer"
                         >
                           <Save className="h-3 w-3" />
-                          Save
+                          {savingPostId === post.id ? "Saving..." : "Save"}
                         </Button>
                         <Button
                           variant="ghost"
@@ -221,7 +225,7 @@ export default function AdminFeedbackTable({ posts }: { posts: any[] }) {
                         </Button>
                       </>
                     ) : (
-                       <>
+                      <>
                         <Button
                           variant="outline"
                           size="sm"

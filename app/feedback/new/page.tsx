@@ -1,5 +1,12 @@
 "use client";
 import { CATEGORIES_TYPES } from "@/app/data/category-data";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,6 +33,15 @@ export default function NewFeedbackPage() {
     if (isSubmitting) return;
 
     const formData = new FormData(e.currentTarget);
+    const title = formData.get("title")?.toString().trim();
+    const description = formData.get("description")?.toString().trim();
+    const category = formData.get("category")?.toString();
+
+    if (!title || !description) {
+      toast.error("Title and description cannot be empty.");
+      return;
+    }
+
     setIsSubmitting(true);
     const loadingToast = toast.loading("Submitting your feedback...");
 
@@ -36,9 +52,9 @@ export default function NewFeedbackPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: formData.get("title"),
-          description: formData.get("description"),
-          category: formData.get("category"),
+          title,
+          description,
+          category,
         }),
       });
 
@@ -94,19 +110,18 @@ export default function NewFeedbackPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
-              <select
-                id="category"
-                name="category"
-                className="w-full px-3 py-2 border rounded-md bg-background"
-                defaultValue={CATEGORIES_TYPES[0]}
-              >
-                {CATEGORIES_TYPES.map((category) => (
-                  <option key={category} value={category}>
-                    {" "}
-                    {category}
-                  </option>
-                ))}
-              </select>
+              <Select name="category" defaultValue={CATEGORIES_TYPES[0]}>
+                <SelectTrigger id="category" className="w-full cursor-pointer">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES_TYPES.map((category) => (
+                    <SelectItem key={category} value={category} className="cursor-pointer">
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
@@ -118,7 +133,7 @@ export default function NewFeedbackPage() {
               />
             </div>
             <div className="flex gap-4">
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
                 {isSubmitting ? "Submitting..." : "Submit Feedback"}
               </Button>
               <Button type="button" variant="outline" asChild>
