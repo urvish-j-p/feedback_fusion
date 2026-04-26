@@ -1,0 +1,77 @@
+name: Deploy Next.js to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup Node
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # 3. Install deps
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Build
+      - name: Build production
+        run: npm run build
+
+      # 5. Prepare SSH
+      - name: Prepare SSH
+        run: |
+          mkdir -p ~/.ssh
+          
+          # Write key and FIX formatting
+          echo "${{ secrets.EC2_SSH_KEY }}" | tr -d '\r' > ~/.ssh/ec2.pem
+          
+          chmod 600 ~/.ssh/ec2.pem
+      # 6. Deploy
+      - name: Deploy to EC2
+        run: |
+          rsync -avz --delete \
+            --exclude ".git" \
+            --exclude ".github" \
+            --exclude "node_modules" \
+            --exclude ".env" \
+            -e "ssh -i ~/.ssh/ec2.pem -o StrictHostKeyChecking=no -o BatchMode=yes" \
+            ./ \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/feedback_fusion
+
+      # 7. Restart App
+      - name: Restart App
+        run: |
+          ssh -i ~/.ssh/ec2.pem -o StrictHostKeyChecking=no -o BatchMode=yes ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            set -e
+
+            # If Node was installed via NVM, we need to manually load it for non-interactive SSH
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            # Check if npm is available, if not, exit with a helpful error
+            if ! command -v npm &> /dev/null; then
+              echo "Error: Node.js (npm) is not installed on your EC2 instance or not in PATH."
+              exit 1
+            fi
+
+            cd /home/ubuntu/feedback_fusion
+            
+            npm install --production
+            pm2 restart feedback_fusion || pm2 start npm --name "feedback_fusion" -- start
+
+            pm2 save
+
+            echo "✅ Deployment complete!!"
+          EOF
