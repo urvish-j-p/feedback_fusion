@@ -18,7 +18,7 @@ export default async function HomePage() {
     <div className="space-y-12">
       {/* Hero Section */}
       <GradientHeader
-        title="From Feedback to Features — Faster!!!"
+        title="From Feedback to Features — Faster!"
         subtitle="Let users suggest ideas, vote on priorities, and track what's coming next."
       >
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-6">
