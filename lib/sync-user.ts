@@ -2,12 +2,13 @@ import { currentUser } from "@clerk/nextjs/server";
 import prisma from "./prisma";
 
 export async function syncCurrentUser() {
-  try {
-    const clerkUser = await currentUser();
+  const clerkUser = await currentUser();
 
-    if (!clerkUser) {
-      return null;
-    }
+  if (!clerkUser) {
+    return null;
+  }
+
+  try {
 
     const email = clerkUser.emailAddresses[0]?.emailAddress;
 

@@ -25,7 +25,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 4. Build
+      # 4. Create env file
+      - name: Create env file
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: echo "$ENV_FILE" > .env
+
+      # 5. Build
       - name: Build production
         run: npm run build
 
